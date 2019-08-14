@@ -1,8 +1,8 @@
 {
   "name": "prototypes-plus",
   "author": "Luiz de Queiroz",
-  "version": "1.0.0-beta1",
-  "description": "funções adicionais para prototypes de tipos.",
+  "version": "1.0.0-beta2",
+  "description": "Funções adicionais para prototypes de tipos.",
   "main": "index.js",
   "files": [
     "./index.js"
