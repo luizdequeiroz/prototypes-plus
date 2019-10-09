@@ -1,48 +1,71 @@
 module.exports = () => {
-    /**
-     * Função para agrupar itens de uma lista orientado a um field específico.
-     * @param {string} fieldKey
-     * @param {string} listName
-     */
-    Array.prototype.groupBy = function (fieldKey, listName) {
-        const groups = this.reduce((groups, item) => {
-            const field = item[fieldKey];
-            if (!groups[field]) {
-                groups[field] = [];
+        /**
+         * Função para agrupar itens de uma lista orientado a um field específico.
+         * @param {string} fieldKey
+         * @param {string} listName
+         */
+        Array.prototype.groupBy = function(fieldKey, listName) {
+            const groups = this.reduce((groups, item) => {
+                const field = item[fieldKey];
+                if (!groups[field]) {
+                    groups[field] = [];
+                }
+                groups[field].push(item);
+                return groups;
+            }, {});
+
+            return Object.keys(groups).map(fieldValue => {
+                const field = {};
+
+                field[fieldKey] = fieldValue;
+                field[listName] = groups[fieldValue]
+                return field;
+            });
+        };
+
+        /**
+         * Função para retornar apenas itens distintos de uma lista de objetos
+         * @param {string} key
+         */
+        Array.prototype.distinct = function(key) {
+            const result = [];
+            const map = new Map();
+
+            for (const item of this) {
+                if (!map.has(item[key])) {
+                    map.set(item[key], true);
+                    const keys = Object.keys(item);
+                    const obj = {};
+                    for (const key of keys) {
+                        obj[key] = item[key];
+                    }
+                    result.push(obj);
+                }
             }
-            groups[field].push(item);
-            return groups;
-        }, {});
 
-        return Object.keys(groups).map(fieldValue => {
-            const field = {};
+            return result;
+        };
 
-            field[fieldKey] = fieldValue;
-            field[listName] = groups[fieldValue]
-            return field;
-        });
-    };
+        /**
+         * Função para extrair a diferença, em dias, entre a data atual e outra posterior.
+         * @param {Date} otherDate
+         */
+        Date.prototype.subtract = function(otherDate) {
+            var oneDay = 1000 * 60 * 60 * 24;
 
-    /**
-     * Função para extrair a diferença, em dias, entre a data atual e outra posterior.
-     * @param {Date} otherDate
-     */
-    Date.prototype.subtract = function (otherDate) {
-        var oneDay = 1000 * 60 * 60 * 24;
+            var dateMsOne = this.getTime();
+            var dateMsTwo = otherDate.getTime();
 
-        var dateMsOne = this.getTime();
-        var dateMsTwo = otherDate.getTime();
+            var diffMs = dateMsOne - dateMsTwo;
 
-        var diffMs = dateMsOne - dateMsTwo;
+            return Math.round((diffMs / oneDay) + 1);
+        };
 
-        return Math.round((diffMs / oneDay) + 1);
-    };
-
-    /**
-     * Função para serializar um objeto em parâmetros de url (key=value).
-     */
-    Object.prototype.serializeToUrl = function () {
-        return `?${Object.keys(this).reduce(
+        /**
+         * Função para serializar um objeto em parâmetros de url (key=value).
+         */
+        Object.prototype.serializeToUrl = function() {
+                return `?${Object.keys(this).reduce(
             (a, k) => {
                 a.push(`${k}=encodeURIComponent(${this[k]})`);
                 return a;
